@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { devtools } from "zustand/middleware";
 
 interface CounterState {
   count: number;
@@ -7,13 +8,16 @@ interface CounterState {
   setCount: (value: number) => void;
 }
 
-const useZustandStore = create<CounterState>(
-  (set: (fn: (state: CounterState) => Partial<CounterState>) => void) => ({
-    count: 0,
-    increment: () => set((state: CounterState) => ({ count: state.count + 1 })),
-    decrement: () => set((state: CounterState) => ({ count: state.count - 1 })),
-    setCount: (value: number) => set(() => ({ count: value })),
-  })
+const useCounterStore = create<CounterState>()(
+  devtools(
+    (set) => ({
+      count: 0,
+      increment: () => set((state) => ({ count: state.count + 1 })),
+      decrement: () => set((state) => ({ count: state.count - 1 })),
+      setCount: (value: number) => set(() => ({ count: value })),
+    }),
+    { name: "counter" }
+  )
 );
 
-export default useZustandStore;
+export default useCounterStore;
